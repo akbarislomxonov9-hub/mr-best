@@ -364,3 +364,96 @@ Traceback (most recent call last):
 yt_dlp.utils.DownloadError: [0;31mERROR:[0m [Instagram] DcgcXbSMLhN: Requested content is not available, rate-limit reached or login required. Use --cookies, --cookies-from-browser, --username and --password, --netrc-cmd, or --netrc (instagram) to provide account credentials
 2026-09-11 15:19:23 | INFO     | instabot | Bot to'xtatildi.
 2026-09-11 15:19:23 | INFO     | instabot | Bot foydalanuvchi tomonidan to'xtatildi (Ctrl+C).
+2026-09-11 16:04:16 | INFO     | instabot | Bot ishga tushmoqda...
+2026-09-11 16:04:16 | INFO     | instabot | Soatlik avtomatik xabar tizimi ishga tushdi.
+2026-09-11 16:04:16 | INFO     | instabot | Foydalanuvchi 7940292393 /start bosdi
+2026-09-11 16:04:16 | INFO     | instabot | Foydalanuvchi 8723631524 /start bosdi
+2026-09-11 16:04:16 | INFO     | instabot | Foydalanuvchi 8723631524 /start bosdi
+2026-09-11 16:04:16 | INFO     | instabot | Foydalanuvchi 8723631524 /start bosdi
+2026-09-11 16:05:14 | INFO     | instabot | [8723631524] Instagram (video) -> https://www.instagram.com/reel/DdHPyOaKRmi/?stkn=MXhucmV1ZGxkNHhmMg==
+2026-09-11 16:05:18 | WARNING  | instabot | Yuklashda urinish 1/3 muvaffaqiyatsiz: [0;31mERROR:[0m [Instagram] DdHPyOaKRmi: Requested content is not available, rate-limit reached or login required. Use --cookies, --cookies-from-browser, --username and --password, --netrc-cmd, or --netrc (instagram) to provide account credentials
+2026-09-11 16:05:26 | WARNING  | instabot | Yuklashda urinish 2/3 muvaffaqiyatsiz: [0;31mERROR:[0m [Instagram] DdHPyOaKRmi: Requested content is not available, rate-limit reached or login required. Use --cookies, --cookies-from-browser, --username and --password, --netrc-cmd, or --netrc (instagram) to provide account credentials
+2026-09-11 16:05:35 | WARNING  | instabot | Yuklashda urinish 3/3 muvaffaqiyatsiz: [0;31mERROR:[0m [Instagram] DdHPyOaKRmi: Requested content is not available, rate-limit reached or login required. Use --cookies, --cookies-from-browser, --username and --password, --netrc-cmd, or --netrc (instagram) to provide account credentials
+2026-09-11 16:05:35 | INFO     | instabot | [8723631524] Video sifatida yuklanmadi, rasm sifatida urinib ko'ramiz: [0;31mERROR:[0m [Instagram] DdHPyOaKRmi: Requested content is not available, rate-limit reached or login required. Use --cookies, --cookies-from-browser, --username and --password, --netrc-cmd, or --netrc (instagram) to provide account credentials
+2026-09-11 16:05:42 | WARNING  | instabot | Rasm yuklashda urinish 1/3 muvaffaqiyatsiz: [0;31mERROR:[0m [Instagram] DdHPyOaKRmi: Requested content is not available, rate-limit reached or login required. Use --cookies, --cookies-from-browser, --username and --password, --netrc-cmd, or --netrc (instagram) to provide account credentials
+2026-09-11 16:06:11 | WARNING  | instabot | Rasm yuklashda urinish 2/3 muvaffaqiyatsiz: [0;31mERROR:[0m [Instagram] DdHPyOaKRmi: Requested content is not available, rate-limit reached or login required. Use --cookies, --cookies-from-browser, --username and --password, --netrc-cmd, or --netrc (instagram) to provide account credentials
+2026-09-11 16:06:18 | WARNING  | instabot | Rasm yuklashda urinish 3/3 muvaffaqiyatsiz: [0;31mERROR:[0m [Instagram] DdHPyOaKRmi: Requested content is not available, rate-limit reached or login required. Use --cookies, --cookies-from-browser, --username and --password, --netrc-cmd, or --netrc (instagram) to provide account credentials
+2026-09-11 16:06:18 | ERROR    | instabot | [8723631524] Yuklab olishda xatolik
+Traceback (most recent call last):
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1626, in wrapper
+    return func(self, *args, **kwargs)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1761, in __extract_info
+    ie_result = ie.extract(url)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\site-packages\yt_dlp\extractor\common.py", line 740, in extract
+    ie_result = self._real_extract(url)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\site-packages\yt_dlp\extractor\instagram.py", line 460, in _real_extract
+    self.raise_login_required('Requested content is not available, rate-limit reached or login required')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\site-packages\yt_dlp\extractor\common.py", line 1245, in raise_login_required
+    raise ExtractorError(msg, expected=True)
+yt_dlp.utils.ExtractorError: [Instagram] DdHPyOaKRmi: Requested content is not available, rate-limit reached or login required. Use --cookies, --cookies-from-browser, --username and --password, --netrc-cmd, or --netrc (instagram) to provide account credentials
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\Downloads\files (7)\bot.py", line 646, in run_link_video
+    raw_path = await asyncio.to_thread(download_video, url, tmp_dir)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\asyncio\threads.py", line 25, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\thread.py", line 86, in run
+    result = ctx.run(self.task)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\thread.py", line 73, in run
+    return fn(*args, **kwargs)
+  File "C:\Users\user\Downloads\files (7)\watermark.py", line 78, in download_video
+    raise last_error
+  File "C:\Users\user\Downloads\files (7)\watermark.py", line 66, in download_video
+    return _download_video_once(url, out_dir)
+  File "C:\Users\user\Downloads\files (7)\watermark.py", line 35, in _download_video_once
+    info = ydl.extract_info(url, download=False)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1615, in extract_info
+    return self.__extract_info(url, self.get_info_extractor(key), download, extra_info, process)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1644, in wrapper
+    self.report_error(str(e), e.format_traceback())
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1092, in report_error
+    self.trouble(f'{self._format_err("ERROR:", self.Styles.ERROR)} {message}', *args, **kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1031, in trouble
+    raise DownloadError(message, exc_info)
+yt_dlp.utils.DownloadError: [0;31mERROR:[0m [Instagram] DdHPyOaKRmi: Requested content is not available, rate-limit reached or login required. Use --cookies, --cookies-from-browser, --username and --password, --netrc-cmd, or --netrc (instagram) to provide account credentials
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\Downloads\files (7)\bot.py", line 656, in run_link_video
+    image_raw_path = await asyncio.to_thread(download_image_from_url, url, tmp_dir)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\asyncio\threads.py", line 25, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\thread.py", line 86, in run
+    result = ctx.run(self.task)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\thread.py", line 73, in run
+    return fn(*args, **kwargs)
+  File "C:\Users\user\Downloads\files (7)\image_tools.py", line 112, in download_image_from_url
+    raise last_error
+  File "C:\Users\user\Downloads\files (7)\image_tools.py", line 98, in download_image_from_url
+    info = ydl.extract_info(url, download=True)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1615, in extract_info
+    return self.__extract_info(url, self.get_info_extractor(key), download, extra_info, process)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1644, in wrapper
+    self.report_error(str(e), e.format_traceback())
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1092, in report_error
+    self.trouble(f'{self._format_err("ERROR:", self.Styles.ERROR)} {message}', *args, **kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1031, in trouble
+    raise DownloadError(message, exc_info)
+yt_dlp.utils.DownloadError: [0;31mERROR:[0m [Instagram] DdHPyOaKRmi: Requested content is not available, rate-limit reached or login required. Use --cookies, --cookies-from-browser, --username and --password, --netrc-cmd, or --netrc (instagram) to provide account credentials
+2026-09-11 17:06:11 | INFO     | instabot | Bot ishga tushmoqda...
+2026-09-11 17:06:11 | INFO     | instabot | Soatlik avtomatik xabar tizimi ishga tushdi.
+2026-09-11 17:06:21 | INFO     | instabot | Foydalanuvchi 7033912501 /start bosdi
