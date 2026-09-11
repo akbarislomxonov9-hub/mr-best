@@ -1,0 +1,8 @@
+aiogram>=3.4.0
+yt-dlp>=2024.4.9
+python-dotenv>=1.0.1
+Pillow>=10.3.0
+qrcode>=7.4.2
+opencv-python-headless>=4.9.0
+# Diqqat: ffmpeg va ffprobe alohida (Python paketi emas) o'rnatilishi
+# shart va PATH'da bo'lishi kerak (README.md ga qarang).
