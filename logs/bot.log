@@ -1297,3 +1297,130 @@ yt_dlp.utils.DownloadError: [0;31mERROR:[0m [youtube] jmZAu5ZyOuQ: The page ne
 2026-09-15 14:15:53 | INFO     | instabot | [7033912501] YouTube video muvaffaqiyatli yuborildi
 2026-09-15 14:16:23 | INFO     | instabot | Bot to'xtatildi.
 2026-09-15 14:16:23 | INFO     | instabot | Bot foydalanuvchi tomonidan to'xtatildi (Ctrl+C).
+2026-09-15 14:16:40 | INFO     | instabot | Bot ishga tushmoqda...
+2026-09-15 14:16:40 | INFO     | instabot | Soatlik avtomatik xabar tizimi ishga tushdi.
+2026-09-15 14:17:04 | INFO     | instabot | [7033912501] Link (audio) -> https://www.youtube.com/shorts/jmZAu5ZyOuQ?feature=share
+2026-09-15 14:17:08 | INFO     | instabot | [7033912501] Link'dan audio muvaffaqiyatli yuborildi
+2026-09-15 14:17:15 | INFO     | instabot | [7033912501] Link (audio) -> https://www.instagram.com/reel/Dc-yrfXysTi/?stkn=MXkybHU5MHg0eDhkcw==
+2026-09-15 14:17:43 | INFO     | instabot | [7033912501] Link'dan audio muvaffaqiyatli yuborildi
+2026-09-15 14:18:15 | INFO     | instabot | [7033912501] Link (audio) -> https://youtu.be/bOupGVM9Uvc?si=tcfTp8oELuDCNMMq
+2026-09-15 14:18:28 | INFO     | instabot | [7033912501] Link'dan audio muvaffaqiyatli yuborildi
+2026-09-15 15:16:39 | INFO     | instabot | Broadcast xatosi (chat_id=8723631524): Telegram server says - Bad Request: chat not found
+2026-09-15 15:16:39 | INFO     | instabot | Soatlik xabar yuborildi: 3 ta muvaffaqiyatli, 1 ta xato.
+2026-09-15 15:35:37 | INFO     | instabot | [7940292393] Musiqa qidiruvi: layli
+2026-09-15 15:36:02 | INFO     | instabot | [7940292393] Musiqa muvaffaqiyatli yuborildi: Yulduz Usmonova - Layli (official video)
+2026-09-15 15:36:51 | INFO     | instabot | [7940292393] Musiqa qidiruvi: start
+2026-09-15 15:37:04 | INFO     | instabot | [7940292393] Musiqa muvaffaqiyatli yuborildi: Laufey - From The Start (Official Music Video)
+2026-09-15 15:37:38 | INFO     | instabot | [7940292393] Musiqa qidiruvi: layli laylijon
+2026-09-15 15:37:55 | INFO     | instabot | [7940292393] Musiqa muvaffaqiyatli yuborildi: Zarifjon Safarov - Laylijon | Зарифжон Сафаров - Лайлижон
+2026-09-15 15:39:52 | INFO     | instabot | [7033912501] Musiqa qidiruvi: jiz jiz
+2026-09-15 15:40:06 | INFO     | instabot | [7033912501] Musiqa muvaffaqiyatli yuborildi: Yunkaa & Masha Tilla - Jiz Jiz
+2026-09-15 15:40:34 | INFO     | instabot | [7033912501] Musiqa qidiruvi: la la la
+2026-09-15 15:40:54 | INFO     | instabot | [7033912501] Musiqa muvaffaqiyatli yuborildi: Naughty Boy - La la la ft. Sam Smith (Lyrics)
+2026-09-15 15:41:22 | INFO     | instabot | [7033912501] Musiqa qidiruvi: asal qizim
+2026-09-15 15:41:37 | INFO     | instabot | [7033912501] Musiqa muvaffaqiyatli yuborildi: Ibrat Azamatov Asal Qizim / Ибрат Азаматов Асал Қизим
+2026-09-15 15:41:49 | INFO     | instabot | [7033912501] Musiqa qidiruvi: bazaviy minimum
+2026-09-15 15:42:01 | INFO     | instabot | [7033912501] Musiqa muvaffaqiyatli yuborildi: Sabi, MIA BOYKA - Базовый минимум (Премьера клипа)
+2026-09-15 15:42:16 | INFO     | instabot | [7033912501] Musiqa qidiruvi: tentak
+2026-09-15 15:43:05 | INFO     | instabot | [7033912501] Musiqa qidiruvi: 1234579
+2026-09-15 15:43:07 | WARNING  | instabot | Musiqa qidirishda urinish 1/3 muvaffaqiyatsiz: [0;31mERROR:[0m [youtube] sB4PcAlq3Rs: This video is not available
+2026-09-15 15:43:11 | WARNING  | instabot | Musiqa qidirishda urinish 2/3 muvaffaqiyatsiz: [0;31mERROR:[0m [youtube] sB4PcAlq3Rs: This video is not available
+2026-09-15 15:43:17 | WARNING  | instabot | Musiqa qidirishda urinish 3/3 muvaffaqiyatsiz: [0;31mERROR:[0m [youtube] sB4PcAlq3Rs: This video is not available
+2026-09-15 15:43:17 | ERROR    | instabot | [7033912501] Musiqa qidirishda xatolik
+Traceback (most recent call last):
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1731, in wrapper
+    return func(self, *args, **kwargs)
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1866, in __extract_info
+    ie_result = ie.extract(url)
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\extractor\common.py", line 765, in extract
+    ie_result = self._real_extract(url)
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\extractor\youtube\_video.py", line 4076, in _real_extract
+    self.raise_no_formats(reason, expected=True)
+    ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\extractor\common.py", line 1272, in raise_no_formats
+    raise ExtractorError(msg, expected=expected, video_id=video_id)
+yt_dlp.utils.ExtractorError: [youtube] sB4PcAlq3Rs: This video is not available
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\Downloads\files (7)\bot.py", line 839, in process_music_query
+    title, filepath = await asyncio.to_thread(search_and_download_music, query, tmp_dir)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\asyncio\threads.py", line 25, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\thread.py", line 86, in run
+    result = ctx.run(self.task)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\thread.py", line 73, in run
+    return fn(*args, **kwargs)
+  File "C:\Users\user\Downloads\files (7)\music.py", line 72, in search_and_download_music
+    raise last_error
+  File "C:\Users\user\Downloads\files (7)\music.py", line 55, in search_and_download_music
+    info = ydl.extract_info(query, download=True)
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1720, in extract_info
+    return self.__extract_info(url, self.get_info_extractor(key), download, extra_info, process)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1731, in wrapper
+    return func(self, *args, **kwargs)
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1887, in __extract_info
+    return self.process_ie_result(ie_result, download, extra_info)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1966, in process_ie_result
+    return self.extract_info(
+           ~~~~~~~~~~~~~~~~~^
+        ie_result['url'], download,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        ie_key=ie_result.get('ie_key'),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        extra_info=extra_info)
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1720, in extract_info
+    return self.__extract_info(url, self.get_info_extractor(key), download, extra_info, process)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1731, in wrapper
+    return func(self, *args, **kwargs)
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1887, in __extract_info
+    return self.process_ie_result(ie_result, download, extra_info)
+           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 2016, in process_ie_result
+    return self.__process_playlist(ie_result, download)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 2169, in __process_playlist
+    entry_result = self.__process_iterable_entry(entry, download, collections.ChainMap({
+        'playlist_index': playlist_index,
+        'playlist_autonumber': i + 1,
+    }, extra))
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1731, in wrapper
+    return func(self, *args, **kwargs)
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 2201, in __process_iterable_entry
+    return self.process_ie_result(
+           ~~~~~~~~~~~~~~~~~~~~~~^
+        entry, download=download, extra_info=extra_info)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1966, in process_ie_result
+    return self.extract_info(
+           ~~~~~~~~~~~~~~~~~^
+        ie_result['url'], download,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        ie_key=ie_result.get('ie_key'),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        extra_info=extra_info)
+        ^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1720, in extract_info
+    return self.__extract_info(url, self.get_info_extractor(key), download, extra_info, process)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1749, in wrapper
+    self.report_error(str(e), e.format_traceback())
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1165, in report_error
+    self.trouble(f'{self._format_err("ERROR:", self.Styles.ERROR)} {message}', *args, **kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1103, in trouble
+    raise DownloadError(message, exc_info)
+yt_dlp.utils.DownloadError: [0;31mERROR:[0m [youtube] sB4PcAlq3Rs: This video is not available
+2026-09-15 15:43:36 | INFO     | instabot | [7033912501] Musiqa qidiruvi: ASAL QIZIM
+2026-09-15 15:43:39 | INFO     | instabot | [7033912501] Musiqa muvaffaqiyatli yuborildi: Jasur Umirov - Tentak | Жасур Умиров - Тентак
+2026-09-15 15:43:51 | INFO     | instabot | [7033912501] Musiqa muvaffaqiyatli yuborildi: Ibrat Azamatov Asal Qizim / Ибрат Азаматов Асал Қизим
+2026-09-15 15:44:26 | INFO     | instabot | [7033912501] Galereya video (watermark)
+2026-09-15 15:45:06 | INFO     | instabot | [7033912501] Galereya videosi muvaffaqiyatli yuborildi
