@@ -1426,3 +1426,138 @@ yt_dlp.utils.DownloadError: [0;31mERROR:[0m [youtube] sB4PcAlq3Rs: This video 
 2026-09-15 15:45:06 | INFO     | instabot | [7033912501] Galereya videosi muvaffaqiyatli yuborildi
 2026-09-15 16:09:16 | INFO     | instabot | [7033912501] Musiqa qidiruvi: jiz jiz
 2026-09-15 16:09:25 | INFO     | instabot | [7033912501] Musiqa muvaffaqiyatli yuborildi: Yunkaa & Masha Tilla - Jiz Jiz
+2026-09-16 14:56:01 | INFO     | instabot | Bot ishga tushmoqda...
+2026-09-16 14:56:01 | INFO     | instabot | Soatlik avtomatik xabar tizimi ishga tushdi.
+2026-09-16 14:56:02 | INFO     | instabot | Foydalanuvchi 7033912501 /start bosdi
+2026-09-16 14:57:33 | INFO     | instabot | Foydalanuvchi 7033912501 /start bosdi
+2026-09-16 14:58:54 | INFO     | instabot | [7033912501] Musiqa qidiruvi: salam
+2026-09-16 14:59:11 | INFO     | instabot | [7033912501] Musiqa muvaffaqiyatli yuborildi: Jasmin - Salam (Premyera)
+2026-09-16 15:00:37 | WARNING  | instabot | Ma'lumot olishda urinish 1/3 muvaffaqiyatsiz: 'NoneType' object has no attribute 'get'
+2026-09-16 15:00:59 | WARNING  | instabot | Ma'lumot olishda urinish 2/3 muvaffaqiyatsiz: 'NoneType' object has no attribute 'get'
+2026-09-16 15:01:04 | WARNING  | instabot | Ma'lumot olishda urinish 3/3 muvaffaqiyatsiz: 'NoneType' object has no attribute 'get'
+2026-09-16 15:01:04 | ERROR    | instabot | [7033912501] Ma'lumot olishda xatolik
+Traceback (most recent call last):
+  File "C:\Users\user\Downloads\files (7)\bot.py", line 963, in handle_text
+    info = await asyncio.to_thread(get_media_info, url)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\asyncio\threads.py", line 25, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\thread.py", line 86, in run
+    result = ctx.run(self.task)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\thread.py", line 73, in run
+    return fn(*args, **kwargs)
+  File "C:\Users\user\Downloads\files (7)\info.py", line 71, in get_media_info
+    raise last_error
+  File "C:\Users\user\Downloads\files (7)\info.py", line 53, in get_media_info
+    "title": info.get("title") or "Noma'lum sarlavha",
+             ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'get'
+2026-09-16 15:01:18 | INFO     | instabot | [7033912501] Video (video) -> https://t.me/c/3827869910/741
+2026-09-16 15:01:19 | WARNING  | instabot | Yuklashda urinish 1/3 muvaffaqiyatsiz: 'NoneType' object has no attribute 'get'
+2026-09-16 15:01:21 | WARNING  | instabot | Yuklashda urinish 2/3 muvaffaqiyatsiz: 'NoneType' object has no attribute 'get'
+2026-09-16 15:01:26 | WARNING  | instabot | Yuklashda urinish 3/3 muvaffaqiyatsiz: 'NoneType' object has no attribute 'get'
+2026-09-16 15:01:26 | INFO     | instabot | [7033912501] Video sifatida yuklanmadi, rasm sifatida urinib ko'ramiz: 'NoneType' object has no attribute 'get'
+2026-09-16 15:01:47 | WARNING  | instabot | Rasm yuklashda urinish 1/3 muvaffaqiyatsiz: 'NoneType' object has no attribute 'setdefault'
+2026-09-16 15:02:09 | WARNING  | instabot | Rasm yuklashda urinish 2/3 muvaffaqiyatsiz: 'NoneType' object has no attribute 'setdefault'
+2026-09-16 15:02:14 | WARNING  | instabot | Rasm yuklashda urinish 3/3 muvaffaqiyatsiz: 'NoneType' object has no attribute 'setdefault'
+2026-09-16 15:02:14 | ERROR    | instabot | [7033912501] Yuklab olishda xatolik
+Traceback (most recent call last):
+  File "C:\Users\user\Downloads\files (7)\bot.py", line 646, in run_link_video
+    raw_path = await asyncio.to_thread(download_video, url, tmp_dir)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\asyncio\threads.py", line 25, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\thread.py", line 86, in run
+    result = ctx.run(self.task)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\thread.py", line 73, in run
+    return fn(*args, **kwargs)
+  File "C:\Users\user\Downloads\files (7)\watermark.py", line 78, in download_video
+    raise last_error
+  File "C:\Users\user\Downloads\files (7)\watermark.py", line 66, in download_video
+    return _download_video_once(url, out_dir)
+  File "C:\Users\user\Downloads\files (7)\watermark.py", line 36, in _download_video_once
+    duration = info.get("duration") or 0
+               ^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'get'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\Downloads\files (7)\bot.py", line 656, in run_link_video
+    image_raw_path = await asyncio.to_thread(download_image_from_url, url, tmp_dir)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\asyncio\threads.py", line 25, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\thread.py", line 86, in run
+    result = ctx.run(self.task)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\thread.py", line 73, in run
+    return fn(*args, **kwargs)
+  File "C:\Users\user\Downloads\files (7)\image_tools.py", line 112, in download_image_from_url
+    raise last_error
+  File "C:\Users\user\Downloads\files (7)\image_tools.py", line 99, in download_image_from_url
+    filepath = ydl.prepare_filename(info)
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1561, in prepare_filename
+    filename = self._prepare_filename(info_dict, tmpl_type=dir_type, outtmpl=outtmpl)
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 194, in wrapper
+    return func(self, *args, **kwargs)
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1532, in _prepare_filename
+    filename = self.evaluate_outtmpl(outtmpl, info_dict, True)
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1522, in evaluate_outtmpl
+    outtmpl, info_dict = self.prepare_outtmpl(outtmpl, info_dict, *args, **kwargs)
+                         ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1273, in prepare_outtmpl
+    info_dict.setdefault('epoch', int(time.time()))  # keep epoch consistent once set
+    ^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'setdefault'
+2026-09-16 15:17:48 | INFO     | instabot | [7033912501] Link (audio) -> https://t.me/Akbar_Islomxonov_Blog
+2026-09-16 15:17:51 | WARNING  | instabot | Audio yuklashda urinish 1/3 muvaffaqiyatsiz: [0;31mERROR:[0m Unsupported URL: https://t.me/Akbar_Islomxonov_Blog
+2026-09-16 15:17:54 | WARNING  | instabot | Audio yuklashda urinish 2/3 muvaffaqiyatsiz: [0;31mERROR:[0m Unsupported URL: https://t.me/Akbar_Islomxonov_Blog
+2026-09-16 15:17:58 | WARNING  | instabot | Audio yuklashda urinish 3/3 muvaffaqiyatsiz: [0;31mERROR:[0m Unsupported URL: https://t.me/Akbar_Islomxonov_Blog
+2026-09-16 15:17:58 | ERROR    | instabot | [7033912501] Audio yuklashda xatolik
+Traceback (most recent call last):
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1731, in wrapper
+    return func(self, *args, **kwargs)
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1866, in __extract_info
+    ie_result = ie.extract(url)
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\extractor\common.py", line 765, in extract
+    ie_result = self._real_extract(url)
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\extractor\generic.py", line 984, in _real_extract
+    raise UnsupportedError(url)
+yt_dlp.utils.UnsupportedError: Unsupported URL: https://t.me/Akbar_Islomxonov_Blog
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\user\Downloads\files (7)\bot.py", line 724, in run_link_audio
+    title, filepath = await asyncio.to_thread(download_audio_from_url, url, tmp_dir)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\asyncio\threads.py", line 25, in to_thread
+    return await loop.run_in_executor(None, func_call)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\thread.py", line 86, in run
+    result = ctx.run(self.task)
+  File "C:\Users\user\AppData\Local\Programs\Python\Python314\Lib\concurrent\futures\thread.py", line 73, in run
+    return fn(*args, **kwargs)
+  File "C:\Users\user\Downloads\files (7)\music.py", line 96, in download_audio_from_url
+    raise last_error
+  File "C:\Users\user\Downloads\files (7)\music.py", line 83, in download_audio_from_url
+    info = ydl.extract_info(url, download=True)
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1720, in extract_info
+    return self.__extract_info(url, self.get_info_extractor(key), download, extra_info, process)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1749, in wrapper
+    self.report_error(str(e), e.format_traceback())
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1165, in report_error
+    self.trouble(f'{self._format_err("ERROR:", self.Styles.ERROR)} {message}', *args, **kwargs)
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\user\Downloads\files (7)\.venv\Lib\site-packages\yt_dlp\YoutubeDL.py", line 1103, in trouble
+    raise DownloadError(message, exc_info)
+yt_dlp.utils.DownloadError: [0;31mERROR:[0m Unsupported URL: https://t.me/Akbar_Islomxonov_Blog
+2026-09-16 15:22:44 | INFO     | instabot | [7033912501] Musiqa qidiruvi: jiz jiz
+2026-09-16 15:22:57 | INFO     | instabot | [7033912501] Musiqa muvaffaqiyatli yuborildi: Yunkaa & Masha Tilla - Jiz Jiz
+2026-09-16 15:28:49 | INFO     | instabot | [7033912501] Musiqa qidiruvi: xurshid sasiq
+2026-09-16 15:29:09 | INFO     | instabot | [7033912501] Musiqa muvaffaqiyatli yuborildi: Siddiq Mahmudov - Nurli nurli | Сиддик Махмудов - Нурли нурли

@@ -317,12 +317,12 @@ lovable.dev	FALSE	/	TRUE	1818043614	editor_sidebar_pct	59.71
 .ojrq.net	TRUE	/	TRUE	1818043559	brwsr	636b9d95-8972-11f1-9dff-277a81c6abab
 .ispot.tv	TRUE	/	TRUE	1821067562	pt	v2:ff40405fe14b4f171ea9ed82b6053b0bcc1b143265d6166873e3c05b878cc929|d148f23b2f72bccac7bdae5fa46ba773433cfff7e28781e8f43fff0cf1b36e34
 .instagram.com	TRUE	/	TRUE	1816662687	ig_did	2CA8B559-9D6A-45F9-BB24-9D3438DB7E3F
-.instagram.com	TRUE	/	TRUE	1824023838	csrftoken	Z63a2-WUzwfUzsk_tcT5I5
+.instagram.com	TRUE	/	TRUE	1824114939	csrftoken	Z63a2-WUzwfUzsk_tcT5I5
 .instagram.com	TRUE	/	TRUE	1819686688	datr	Ht9mavogHDf3E0wBe6vioNzj
 .instagram.com	TRUE	/	TRUE	1816663331	ig_nrcb	1
 .instagram.com	TRUE	/	TRUE	1819687330	mid	ambhnwALAAFr-1kr2-qoO5cq5hcN
-.instagram.com	TRUE	/	TRUE	1824023839	ps_l	0
-.instagram.com	TRUE	/	TRUE	1824023839	ps_n	0
+.instagram.com	TRUE	/	TRUE	1824114812	ps_l	1
+.instagram.com	TRUE	/	TRUE	1824114812	ps_n	1
 .claude.ai	TRUE	/	TRUE	1819688198	_fbp	fb.1.1785128196305.67876764014902800
 .claude.ai	TRUE	/	TRUE	1820910134	ajs_anonymous_id	claudeai.v1.1754a365-4ad8-46d0-b1e3-e7fbcd6cbdb2
 .claude.ai	TRUE	/	TRUE	1820910134	CH-prefers-color-scheme	light
@@ -580,7 +580,6 @@ play.google.com	FALSE	/	TRUE	1823689050	__Secure-OSID	g.a000Cgm0XcpdyCGFNt8He_3O
 .grok.com	TRUE	/	TRUE	0	x-anonuserid	e16de8d0-1fcc-4a2a-9a75-7d3056491b7f
 .grok.com	TRUE	/	TRUE	0	x-challenge	OCxwXCjQgUY38mmdnQFMIsiS%2BvRNWbu%2BF%2FRWM4msoo29OVeWO1NI9zoBLAs6ZDFduXCbMVwo1uMyh%2FLxiC4myRw6B9yTkbklzWzyNUhggZNg2QBd4n0vqW812lNQe9Ih3QlbQbb8rjc01%2FAmpkrwmFaGUNchmRZcJF1ko0IHN%2BVc1KuwjBI%3D
 .grok.com	TRUE	/	TRUE	0	x-signature	Y3oTkbSRAGUoaiNBQ%2BFMYcfm3Quy9OTp4bFTVfSY5bhQQD8Yx7bb1ZL1%2FDTNUsV2tckV4rp9K8flq9E6Apy2zg%3D%3D
-.grok.com	TRUE	/	TRUE	1789464425	__stripe_sid	a6f25f81-1a9c-4269-97bc-05ad10c03624d1d205
 .grok.com	TRUE	/	TRUE	1805013919	sso-rw	eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzZXNzaW9uX2lkIjoiYjk0NGE4NjEtMTQ1MS00YTQwLTg5MWUtNjRiYWUzYWE2MmIxIn0.EAVHy4kMXUJGWf-KQmpQzPH6FqPa8Tz5NzppS5fibO0
 .grok.com	TRUE	/	TRUE	1805013919	sso	eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzZXNzaW9uX2lkIjoiYjk0NGE4NjEtMTQ1MS00YTQwLTg5MWUtNjRiYWUzYWE2MmIxIn0.EAVHy4kMXUJGWf-KQmpQzPH6FqPa8Tz5NzppS5fibO0
 .grok.com	TRUE	/	TRUE	0	x-userid	cc3b44b9-fd63-4adc-9479-333bc46f84b5
