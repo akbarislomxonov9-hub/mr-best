@@ -9,5 +9,6 @@ logs/
 *.mp3
 *.mp4
 *.webm
+*.mkv
 known_users.json
 .DS_Store
