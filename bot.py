@@ -1,6 +1,3 @@
-
- 
-
 import asyncio
 import os
 import tempfile
@@ -17,7 +14,6 @@ from aiogram.types import (
 )
 from aiogram.filters import CommandStart, Command
 from aiogram.exceptions import TelegramAPIError
-
 from aiogram.types import ErrorEvent
 
 from config import (
@@ -82,18 +78,10 @@ dp = Dispatcher()
 user_mode: dict[int, str | None] = {}
 user_last_request: dict[int, float] = {}
 
-# Foydalanuvchi link yoki video yuborgach, "musiqa yoki video?" deb
-# so'ralganda, javob kelgunicha shu yerda kutib turadi.
-# chat_id -> {"kind": "link", "url": ..., "platform": ...}
-#          | {"kind": "video", "file_id": ...}
+# Galereya video uchun hali tanlov saqlanadi
 pending_choice: dict[int, dict] = {}
 
-# ✂️ Video kesish (trim) uchun: chat_id -> yuklab olingan videoning
-# diskdagi (vaqtinchalik bo'lmagan) yo'li. Foydalanuvchi "boshlanish-tugash"
-# vaqtini yozganda ishlatiladi.
 trim_pending: dict[int, str] = {}
-
-# 📐 Rasm o'lchamini moslash uchun: chat_id -> yuklab olingan rasm yo'li
 resize_pending: dict[int, str] = {}
 
 TRIM_DIR = "downloads/trim"
@@ -128,10 +116,6 @@ def resize_preset_keyboard() -> InlineKeyboardMarkup:
 
 
 def check_cooldown(chat_id: int) -> float:
-    """
-    Agar foydalanuvchi juda tez-tez so'rov yuborayotgan bo'lsa,
-    kutish kerak bo'lgan soniyalar sonini qaytaradi (0 bo'lsa — bemalol).
-    """
     now = time.monotonic()
     last = user_last_request.get(chat_id, 0.0)
     elapsed = now - last
@@ -153,36 +137,20 @@ async def cmd_start(message: Message) -> None:
     await message.answer(
         "Salom! 👋 Xush kelibsiz!\n\n"
         "Men ko'p funksiyali media botman — video, musiqa va rasmlar bilan "
-        "bog'liq turli vazifalarni bajaraman. Quyida nima qila olishimni "
-        "batafsil tushuntiraman:\n\n"
-        f"{MENU_INSTAGRAM} — Instagram post/reels linkini yuboring, video "
-        "yuklab, undagi username/watermarkni tozalayman.\n\n"
-        f"{MENU_TIKTOK} — TikTok video linkini yuboring, xuddi shunday "
-        "watermarkni tozalayman.\n\n"
-        f"{MENU_MUSIC} — qo'shiq nomini yozing (masalan 'Ummon guruhi - "
-        "Ohangim'), men uni qidirib, audio fayl sifatida yuboraman.\n\n"
-        f"{MENU_GALLERY} — telefon/kompyuteringizdagi videoni to'g'ridan-"
-        "to'g'ri yuboring, undagi belgini tozalab beraman.\n\n"
-        "🖼 Rasm — istalgan rasmni (fayl sifatida) yuborsangiz, undagi "
-        "watermark/belgini ham tozalayman.\n\n"
-        f"{MENU_IMAGE_COMPRESS} — rasm hajmini kichraytirish (fayl hajmi "
-        "katta bo'lsa foydali).\n\n"
-        f"{MENU_VIDEO_COMPRESS} — video hajmini kichraytirish.\n\n"
-        f"{MENU_TRIM} — videoning faqat kerakli qismini (masalan 5-15-"
-        "soniyalarini) kesib olaman.\n\n"
-        f"{MENU_INFO} — video linkini yuklamasdan turib, uning sarlavhasi, "
-        "muallifi va davomiyligini ko'rsataman.\n\n"
-        f"{MENU_QR} — istalgan matn yoki linkdan QR-kod yaratib beraman.\n\n"
-        f"{MENU_QR_SCAN} — rasmdagi QR-kodni o'qib, ichidagi matn/linkni "
-        "chiqarib beraman.\n\n"
-        f"{MENU_RESIZE} — rasmni Instagram Story/Post/Kvadrat o'lchamiga "
-        "moslashtiraman.\n\n"
-        f"{MENU_STATS} — botning qancha ishlaganini ko'rsataman.\n\n"
-        f"{MENU_SETTINGS} — joriy sozlamalarni ko'rsataman.\n\n"
-        "💡 Eslatma: Instagram/TikTok'dan tashqari, YouTube, Facebook, "
-        "Twitter/X va boshqa ko'plab tarmoqlardan ham link yuborsangiz, "
-        "avtomatik aniqlab ishlov beraman.\n\n"
-        "Yordam kerak bo'lsa istalgan vaqtda /help yozing. Boshladik! 🚀",
+        "bog'liq turli vazifalarni bajaraman.\n\n"
+        f"{MENU_INSTAGRAM} — Instagram post/reels linkini yuboring.\n"
+        f"{MENU_TIKTOK} — TikTok video linkini yuboring.\n"
+        f"{MENU_MUSIC} — qo'shiq nomini yozing.\n"
+        f"{MENU_GALLERY} — telefon/kompyuterdagi videoni yuboring.\n"
+        "🖼 Rasm — watermark tozalash.\n"
+        f"{MENU_IMAGE_COMPRESS} / {MENU_VIDEO_COMPRESS} — siqish.\n"
+        f"{MENU_TRIM} — video kesish.\n"
+        f"{MENU_INFO} — video ma'lumoti.\n"
+        f"{MENU_QR} / {MENU_QR_SCAN} — QR yaratish/o'qish.\n"
+        f"{MENU_RESIZE} — rasm o'lchami.\n"
+        f"{MENU_STATS} / {MENU_SETTINGS}\n\n"
+        "💡 Link tashlasangiz — darhol watermark tozalangan video + to'liq musiqa yuboriladi.\n"
+        "Yordam: /help",
         reply_markup=main_menu_keyboard(),
     )
 
@@ -191,23 +159,18 @@ async def cmd_start(message: Message) -> None:
 async def cmd_help(message: Message) -> None:
     await message.answer(
         "🆘 Yordam\n\n"
-        "• Video link (Instagram, TikTok, YouTube, Facebook, Twitter/X va h.k.) "
-        "yuborsangiz, bot 🎵 Musiqa yoki 🖼 Video (watermark tozalangan) "
-        "kerakligini so'raydi.\n"
-        "• Video faylni to'g'ridan-to'g'ri (galereyadan) yuborsangiz ham, "
-        "xuddi shu tanlov beriladi.\n"
-        "• Rasm yuborsangiz, undagi watermark/belgi avtomatik tozalanadi.\n"
-        "• Qo'shiq nomi bo'yicha qidirish uchun 🎵 Musiqa tugmasini bosing.\n"
-        "• 🗜 Rasm siqish / 🎞 Video siqish — fayl hajmini kichraytiradi.\n"
-        "• ✂️ Video kesish — video yuboring, so'ng oralig'ini yozing "
-        "(masalan: 5-15).\n"
-        "• ℹ️ Video ma'lumoti — linkni yuboring, yuklamasdan ma'lumot beraman.\n"
-        "• 🔳 QR-kod yaratish — istalgan matn/linkdan QR-kod yaratadi.\n"
-        "• 🔎 QR o'qish — QR-kodli rasm yuboring, ichidagi matnni o'qiyman.\n"
-        "• 📐 Rasm o'lchami — rasmni Story/Post/Kvadrat o'lchamiga moslayman.\n"
-        "• 📊 Statistika — botning ishlatilish hisobini ko'rsatadi.\n"
+        "• Video link (Instagram, TikTok, YouTube va h.k.) yuborsangiz — "
+        "darhol watermark tozalangan video + to'liq musiqa yuboriladi.\n"
+        "• Galereyadan video yuborsangiz — 🎵 Musiqa yoki 🖼 Video tanlashingiz mumkin.\n"
+        "• Rasm yuborsangiz — watermark tozalanadi.\n"
+        "• Qo'shiq nomi — 🎵 Musiqa tugmasi orqali.\n"
+        "• 🗜 Rasm siqish / 🎞 Video siqish\n"
+        "• ✂️ Video kesish — video yuboring, so'ng 5-15 deb yozing.\n"
+        "• ℹ️ Video ma'lumoti\n"
+        "• 🔳 QR-kod yaratish / 🔎 QR o'qish\n"
+        "• 📐 Rasm o'lchami\n"
         f"• Video davomiyligi {MAX_VIDEO_DURATION_SECONDS // 60} daqiqadan oshmasligi kerak.\n"
-        "• Joriy amalni bekor qilish uchun /cancel yozing."
+        "• Bekor qilish: /cancel"
     )
 
 
@@ -236,8 +199,6 @@ async def cmd_cancel(message: Message) -> None:
 
 @dp.message(Command("broadcast"))
 async def cmd_broadcast(message: Message) -> None:
-    """Faqat admin uchun: barcha foydalanuvchilarga xabar yuboradi.
-    Foydalanish: /broadcast Xabar matni shu yerda"""
     chat_id = message.chat.id
     if not admin.is_admin(chat_id):
         await message.answer("⛔ Bu buyruq faqat admin uchun.")
@@ -350,7 +311,7 @@ async def menu_settings(message: Message) -> None:
 
 
 # ==================================================================
-# 1-QADAM: LINK YOKI GALEREYA VIDEO KELGANDA — TANLOV SO'RASH
+# VIDEO (GALEREYA)
 # ==================================================================
 
 @dp.message(F.video)
@@ -370,7 +331,6 @@ async def handle_uploaded_video(message: Message) -> None:
 
     mode = user_mode.get(chat_id)
 
-    # "🎞 Video siqish" tugmasi orqali kelgan bo'lsa — to'g'ridan-to'g'ri siqamiz
     if mode == "video_compress":
         await message.answer("✅ Video qabul qilindi! Siqilmoqda...")
         status_msg = await message.answer("⏳ Yuklab olinmoqda...")
@@ -405,8 +365,6 @@ async def handle_uploaded_video(message: Message) -> None:
         stats.record_event("video_siqish", chat_id)
         return
 
-    # "✂️ Video kesish" tugmasi orqali kelgan bo'lsa — videoni saqlab,
-    # boshlanish/tugash vaqtini so'raymiz
     if mode == "trim":
         status_msg = await message.answer("⏳ Yuklab olinmoqda...")
         raw_path = os.path.join(TRIM_DIR, f"{chat_id}_{uuid.uuid4().hex}.mp4")
@@ -430,12 +388,12 @@ async def handle_uploaded_video(message: Message) -> None:
             f"✅ Video qabul qilindi{dur_text}.\n\n"
             "✂️ Qaysi oralig'ini olishni yozing.\n"
             "Format: <b>boshlanish-tugash</b> (soniyalarda)\n"
-            "Masalan: <code>5-15</code> (5-soniyadan 15-soniyagacha)",
+            "Masalan: <code>5-15</code>",
             parse_mode="HTML",
         )
         return
 
-    # Aks holda — odatdagidek "Musiqa yoki Video (watermark)?" deb so'raymiz
+    # Galereya video — hali tanlov beriladi
     pending_choice[chat_id] = {"kind": "video", "file_id": message.video.file_id}
     await message.answer(
         "🎬 Video qabul qilindi! Nima kerak?",
@@ -444,7 +402,7 @@ async def handle_uploaded_video(message: Message) -> None:
 
 
 # ==================================================================
-# RASM (PHOTO) BILAN ISHLASH
+# RASM
 # ==================================================================
 
 @dp.message(F.photo)
@@ -456,9 +414,8 @@ async def handle_uploaded_photo(message: Message) -> None:
         return
 
     mode = user_mode.get(chat_id)
-    photo = message.photo[-1]  # eng katta hajmdagi versiyasi
+    photo = message.photo[-1]
 
-    # 🔎 QR-kod o'qish rejimi — alohida, oddiy oqimdan tashqarida ishlaydi
     if mode == "qr_scan":
         status_msg = await message.answer("⏳ Rasm tekshirilmoqda...")
         with tempfile.TemporaryDirectory() as tmp_dir:
@@ -485,8 +442,6 @@ async def handle_uploaded_photo(message: Message) -> None:
         schedule_followup(bot, chat_id)
         return
 
-    # 📐 Rasm o'lchamini moslash rejimi — avval rasmni saqlaymiz, keyin
-    # inline tugmalar orqali o'lcham shablonini so'raymiz
     if mode == "resize":
         status_msg = await message.answer("⏳ Yuklab olinmoqda...")
         raw_path = os.path.join(RESIZE_DIR, f"{chat_id}_{uuid.uuid4().hex}.jpg")
@@ -559,19 +514,19 @@ async def handle_uploaded_photo(message: Message) -> None:
 
 
 # ==================================================================
-# 2-QADAM: TANLOVGA JAVOB (Musiqa yoki Video) — CALLBACK
+# CALLBACK (galereya tanlovi + resize)
 # ==================================================================
 
 @dp.callback_query(F.data.startswith("choice:"))
 async def handle_choice(callback: CallbackQuery) -> None:
     chat_id = callback.message.chat.id
-    action = callback.data.split(":", 1)[1]  # "music" yoki "video"
+    action = callback.data.split(":", 1)[1]
     pending = pending_choice.pop(chat_id, None)
     await callback.answer()
 
     if not pending:
         await callback.message.edit_text(
-            "⚠️ So'rov muddati tugagan. Iltimos, linkni yoki videoni qayta yuboring."
+            "⚠️ So'rov muddati tugagan. Iltimos, videoni qayta yuboring."
         )
         return
 
@@ -579,14 +534,7 @@ async def handle_choice(callback: CallbackQuery) -> None:
     await callback.message.edit_text(f"✅ Tanlandi: {label}. Ishlov berilmoqda...")
     status_msg = callback.message
 
-    if pending["kind"] == "link":
-        url = pending["url"]
-        platform_name = pending.get("platform", "Video")
-        if action == "video":
-            await run_link_video(status_msg, chat_id, url, platform_name)
-        else:
-            await run_link_audio(status_msg, chat_id, url)
-    else:  # kind == "video" (galereyadan)
+    if pending["kind"] == "video":
         file_id = pending["file_id"]
         if action == "video":
             await run_gallery_video(status_msg, chat_id, file_id)
@@ -634,22 +582,21 @@ async def handle_resize_choice(callback: CallbackQuery) -> None:
 
 
 # ==================================================================
-# 3-QADAM: HAQIQIY ISHLOV BERISH FUNKSIYALARI
+# ASOSIY ISHLOV FUNKSIYALARI
 # ==================================================================
 
-async def run_link_video(status_msg: Message, chat_id: int, url: str, platform_name: str) -> None:
-    logger.info("[%s] %s (video) -> %s", chat_id, platform_name, url)
+async def process_link_both(status_msg: Message, chat_id: int, url: str, platform_name: str) -> None:
+    """Linkdan watermark tozalangan video + TO'LIQ musiqa yuboradi."""
+    logger.info("[%s] %s (video+to'liq audio) -> %s", chat_id, platform_name, url)
     await status_msg.edit_text("⏳ Video yuklanmoqda...")
 
     with tempfile.TemporaryDirectory() as tmp_dir:
         try:
-            raw_path = await asyncio.to_thread(download_video, url, tmp_dir)
+            raw_path, music_query = await asyncio.to_thread(download_video, url, tmp_dir)
         except ValueError as e:
             await status_msg.edit_text(f"⚠️ {e}")
             return
         except Exception as e:
-            # Video sifatida yuklab bo'lmadi — balki bu shunchaki rasm postidir,
-            # shuni sinab ko'ramiz (masalan Instagram rasm posti).
             logger.info("[%s] Video sifatida yuklanmadi, rasm sifatida urinib ko'ramiz: %s", chat_id, e)
             await status_msg.edit_text("🖼 Bu video emas, rasm bo'lishi mumkin — tekshirilmoqda...")
             try:
@@ -658,8 +605,6 @@ async def run_link_video(status_msg: Message, chat_id: int, url: str, platform_n
                 logger.exception("[%s] Yuklab olishda xatolik", chat_id)
                 await status_msg.edit_text(
                     "❌ Yuklab bo'lmadi.\n"
-                    "Sabablari: kontent maxfiy akkauntdan, link noto'g'ri, "
-                    "yoki tarmoqda vaqtinchalik muammo bo'lishi mumkin.\n"
                     f"Texnik tafsilot: {str(e)[:200]}"
                 )
                 return
@@ -672,13 +617,15 @@ async def run_link_video(status_msg: Message, chat_id: int, url: str, platform_n
                     WATERMARK_POSITION, WATERMARK_WIDTH_RATIO, WATERMARK_HEIGHT_RATIO,
                 )
             except Exception:
-                logger.exception("[%s] Rasm watermarkni tozalashda xatolik", chat_id)
                 processed_image_path = image_raw_path
-                await status_msg.edit_text("⚠️ Tozalab bo'lmadi, asl rasm yuborilmoqda...")
 
             await status_msg.edit_text("📤 Rasm yuborilmoqda...")
             try:
-                await bot.send_photo(chat_id, FSInputFile(processed_image_path), caption=f"✅ Tayyor! ({platform_name})")
+                await bot.send_photo(
+                    chat_id,
+                    FSInputFile(processed_image_path),
+                    caption=f"✅ Tayyor! ({platform_name})",
+                )
             except TelegramAPIError:
                 await status_msg.edit_text("❌ Rasm yuborilmadi.")
                 return
@@ -687,7 +634,8 @@ async def run_link_video(status_msg: Message, chat_id: int, url: str, platform_n
             schedule_followup(bot, chat_id)
             return
 
-        await status_msg.edit_text("🎬 Username/watermark tozalanmoqda...")
+        # Watermark tozalash
+        await status_msg.edit_text("🎬 Watermark tozalanmoqda...")
         processed_path = os.path.join(tmp_dir, f"{uuid.uuid4().hex}_clean.mp4")
         try:
             await asyncio.to_thread(
@@ -696,128 +644,53 @@ async def run_link_video(status_msg: Message, chat_id: int, url: str, platform_n
         except Exception:
             logger.exception("[%s] Watermarkni tozalashda xatolik", chat_id)
             processed_path = raw_path
-            await status_msg.edit_text("⚠️ Watermarkni tozalab bo'lmadi, asl video yuborilmoqda...")
 
+        # TO'LIQ musiqa — nom bo'yicha YouTube'dan qidirish
+        await status_msg.edit_text(f"🎵 To'liq musiqa qidirilmoqda...\n🔎 {music_query[:80]}")
+        full_audio_path = None
+        full_title = music_query
+        try:
+            full_title, full_audio_path = await asyncio.to_thread(
+                search_and_download_music, music_query, tmp_dir
+            )
+        except Exception as e:
+            logger.warning("[%s] To'liq musiqa topilmadi, videodan audio: %s", chat_id, e)
+            full_audio_path = os.path.join(tmp_dir, f"{uuid.uuid4().hex}.mp3")
+            try:
+                await asyncio.to_thread(extract_audio_from_local_video, raw_path, full_audio_path)
+                full_title = "Video audiosi (to'liq trek topilmadi)"
+            except Exception:
+                full_audio_path = None
+
+        # Video yuborish
         await status_msg.edit_text("📤 Video yuborilmoqda...")
         try:
-            await bot.send_video(chat_id, FSInputFile(processed_path), caption=f"✅ Tayyor! ({platform_name})")
+            await bot.send_video(
+                chat_id,
+                FSInputFile(processed_path),
+                caption=f"✅ Video tayyor! ({platform_name})",
+            )
         except TelegramAPIError as e:
             logger.error("[%s] Video yuborishda xatolik: %s", chat_id, e)
-            await status_msg.edit_text(
-                "❌ Video juda katta yoki Telegram uni qabul qilmadi. "
-                "(Telegram bot orqali maksimal 50 MB gacha fayl yuborish mumkin.)"
-            )
-            return
+            await status_msg.edit_text("❌ Video yuborilmadi (hajmi katta bo'lishi mumkin).")
+
+        # To'liq audio yuborish
+        if full_audio_path and os.path.exists(full_audio_path):
+            try:
+                await bot.send_audio(
+                    chat_id,
+                    FSInputFile(full_audio_path),
+                    title=str(full_title)[:64],
+                    caption=f"🎵 To'liq musiqa\n{full_title}",
+                )
+            except TelegramAPIError as e:
+                logger.error("[%s] Audio yuborishda xatolik: %s", chat_id, e)
+
         await status_msg.delete()
 
-    logger.info("[%s] %s video muvaffaqiyatli yuborildi", chat_id, platform_name)
     stats.record_event("video", chat_id)
-    schedule_followup(bot, chat_id)
-
-
-async def run_link_audio(status_msg: Message, chat_id: int, url: str) -> None:
-    logger.info("[%s] Link (audio) -> %s", chat_id, url)
-    await status_msg.edit_text("⏳ Audio (musiqa) yuklanmoqda...")
-
-    with tempfile.TemporaryDirectory() as tmp_dir:
-        try:
-            title, filepath = await asyncio.to_thread(download_audio_from_url, url, tmp_dir)
-        except Exception as e:
-            logger.exception("[%s] Audio yuklashda xatolik", chat_id)
-            await status_msg.edit_text(
-                f"❌ Audio yuklab bo'lmadi.\nTexnik tafsilot: {str(e)[:200]}"
-            )
-            return
-
-        await status_msg.edit_text("📤 Yuborilmoqda...")
-        try:
-            await bot.send_audio(chat_id, FSInputFile(filepath), title=title, caption=f"🎵 {title}")
-        except TelegramAPIError as e:
-            logger.error("[%s] Audio yuborishda xatolik: %s", chat_id, e)
-            await status_msg.edit_text("❌ Audio faylni yuborib bo'lmadi.")
-            return
-        await status_msg.delete()
-
-    logger.info("[%s] Link'dan audio muvaffaqiyatli yuborildi", chat_id)
     stats.record_event("musiqa", chat_id)
     schedule_followup(bot, chat_id)
-
-
-async def run_gallery_video(status_msg: Message, chat_id: int, file_id: str) -> None:
-    logger.info("[%s] Galereya video (watermark)", chat_id)
-    await status_msg.edit_text("⏳ Video yuklab olinmoqda...")
-
-    with tempfile.TemporaryDirectory() as tmp_dir:
-        raw_path = os.path.join(tmp_dir, f"{uuid.uuid4().hex}.mp4")
-        try:
-            file_info = await bot.get_file(file_id)
-            await bot.download_file(file_info.file_path, destination=raw_path)
-        except Exception as e:
-            logger.exception("[%s] Videoni yuklab olishda xatolik", chat_id)
-            await status_msg.edit_text(f"❌ Videoni yuklab bo'lmadi: {str(e)[:200]}")
-            return
-
-        await status_msg.edit_text("🎬 Watermark/belgi tozalanmoqda...")
-        processed_path = os.path.join(tmp_dir, f"{uuid.uuid4().hex}_clean.mp4")
-        try:
-            await asyncio.to_thread(
-                remove_watermark, raw_path, processed_path, WATERMARK_POSITION, WATERMARK_MODE
-            )
-        except Exception:
-            logger.exception("[%s] Watermarkni tozalashda xatolik", chat_id)
-            processed_path = raw_path
-            await status_msg.edit_text("⚠️ Tozalab bo'lmadi, asl video yuborilmoqda...")
-
-        await status_msg.edit_text("📤 Video yuborilmoqda...")
-        try:
-            await bot.send_video(chat_id, FSInputFile(processed_path), caption="✅ Tayyor!")
-        except TelegramAPIError as e:
-            logger.error("[%s] Video yuborishda xatolik: %s", chat_id, e)
-            await status_msg.edit_text("❌ Video juda katta yoki yuborilmadi.")
-            return
-        await status_msg.delete()
-
-    logger.info("[%s] Galereya videosi muvaffaqiyatli yuborildi", chat_id)
-    stats.record_event("video", chat_id)
-    schedule_followup(bot, chat_id)
-
-
-async def run_gallery_audio(status_msg: Message, chat_id: int, file_id: str) -> None:
-    logger.info("[%s] Galereya video (audio ajratish)", chat_id)
-    await status_msg.edit_text("⏳ Video yuklab olinmoqda...")
-
-    with tempfile.TemporaryDirectory() as tmp_dir:
-        raw_path = os.path.join(tmp_dir, f"{uuid.uuid4().hex}.mp4")
-        try:
-            file_info = await bot.get_file(file_id)
-            await bot.download_file(file_info.file_path, destination=raw_path)
-        except Exception as e:
-            logger.exception("[%s] Videoni yuklab olishda xatolik", chat_id)
-            await status_msg.edit_text(f"❌ Videoni yuklab bo'lmadi: {str(e)[:200]}")
-            return
-
-        await status_msg.edit_text("🎵 Audio ajratilmoqda...")
-        audio_path = os.path.join(tmp_dir, f"{uuid.uuid4().hex}.mp3")
-        try:
-            await asyncio.to_thread(extract_audio_from_local_video, raw_path, audio_path)
-        except Exception as e:
-            logger.exception("[%s] Audio ajratishda xatolik", chat_id)
-            await status_msg.edit_text(f"❌ Audio ajratib bo'lmadi: {str(e)[:200]}")
-            return
-
-        await status_msg.edit_text("📤 Yuborilmoqda...")
-        try:
-            await bot.send_audio(chat_id, FSInputFile(audio_path), caption="🎵 Tayyor!")
-        except TelegramAPIError as e:
-            logger.error("[%s] Audio yuborishda xatolik: %s", chat_id, e)
-            await status_msg.edit_text("❌ Audio faylni yuborib bo'lmadi.")
-            return
-        await status_msg.delete()
-
-    logger.info("[%s] Galereya audiosi muvaffaqiyatli yuborildi", chat_id)
-    stats.record_event("musiqa", chat_id)
-    schedule_followup(bot, chat_id)
-
 
 # ==================================================================
 # MUSIQA QIDIRISH
@@ -859,7 +732,7 @@ async def process_music_query(message: Message, query: str) -> None:
 
 
 # ==================================================================
-# MATNLI XABARLARNI YO'NALTIRISH
+# MATNLI XABARLAR
 # ==================================================================
 
 @dp.message(F.text)
@@ -868,7 +741,6 @@ async def handle_text(message: Message) -> None:
     chat_id = message.chat.id
     mode = user_mode.get(chat_id)
 
-    # QR-kod rejimida bo'lsa — matn ichida link bo'lsa ham, baribir QR yaratamiz
     if mode == "qr":
         wait = check_cooldown(chat_id)
         if wait > 0:
@@ -888,7 +760,6 @@ async def handle_text(message: Message) -> None:
         schedule_followup(bot, chat_id)
         return
 
-    # ✂️ Video kesish: foydalanuvchi "boshlanish-tugash" formatida vaqt yozadi
     if mode == "trim_times":
         raw_path = trim_pending.get(chat_id)
         if not raw_path or not os.path.exists(raw_path):
@@ -948,11 +819,10 @@ async def handle_text(message: Message) -> None:
                         pass
         return
 
-    # ℹ️ Video ma'lumoti: linkni yuklamasdan turib ma'lumot beramiz
     if mode == "info":
         url = extract_url(text, GENERIC_URL_RE)
         if not url:
-            await message.answer("❗ Iltimos, video linkini yuboring (masalan Instagram yoki TikTok linki).")
+            await message.answer("❗ Iltimos, video linkini yuboring.")
             return
         wait = check_cooldown(chat_id)
         if wait > 0:
@@ -968,19 +838,16 @@ async def handle_text(message: Message) -> None:
             await status_msg.edit_text(f"❌ Ma'lumot olib bo'lmadi: {str(e)[:200]}")
         return
 
+    # === ASOSIY O'ZGARISH: Link tashlaganda darhol video + to'liq musiqa ===
     url = extract_url(text, GENERIC_URL_RE)
-
     if url:
         wait = check_cooldown(chat_id)
         if wait > 0:
             await message.answer(f"⏱ Iltimos, {wait} soniya kuting va qayta urining.")
             return
         platform_name = detect_platform_name(url)
-        pending_choice[chat_id] = {"kind": "link", "url": url, "platform": platform_name}
-        await message.answer(
-            f"🔗 {platform_name} link qabul qilindi! Nima kerak?",
-            reply_markup=choice_keyboard(),
-        )
+        status_msg = await message.answer(f"🔗 {platform_name} link qabul qilindi! Ishlov berilmoqda...")
+        await process_link_both(status_msg, chat_id, url, platform_name)
         return
 
     if mode == "music":
@@ -1005,21 +872,17 @@ async def handle_text(message: Message) -> None:
 
     await message.answer(
         "Tushunmadim 🙂 Pastdagi menyudan bo'lim tanlang yoki to'g'ridan-to'g'ri "
-        "video linkini (Instagram, TikTok, YouTube va h.k.) yuboring. "
-        "Yordam uchun /help yozing.",
+        "video linkini yuboring. Yordam uchun /help yozing.",
         reply_markup=main_menu_keyboard(),
     )
 
 
 # ==================================================================
-# XATOLIKLARNI GLOBAL USHLASH
+# XATOLIKLARNI USHLASH
 # ==================================================================
 
 @dp.error()
 async def global_error_handler(event: ErrorEvent) -> bool:
-    # DIQQAT: bu yerda faol "except" bloki ichida emasmiz, shuning uchun
-    # logger.exception() o'rniga exc_info orqali xatolikni to'g'ri
-    # logga yozamiz (aks holda traceback noto'g'ri/bo'sh chiqadi).
     logger.error(
         "Kutilmagan xatolik: %s", event.exception, exc_info=event.exception
     )
@@ -1032,9 +895,6 @@ async def global_error_handler(event: ErrorEvent) -> bool:
 
 async def main() -> None:
     logger.info("Bot ishga tushmoqda...")
-
-    # 📢 Barcha foydalanuvchilarga avtomatik soatlik xabar yuborish
-    # tizimini fon vazifasi (background task) sifatida ishga tushiramiz.
     broadcast_task = asyncio.create_task(admin.hourly_broadcast_loop(bot))
 
     try:

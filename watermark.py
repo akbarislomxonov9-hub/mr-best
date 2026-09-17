@@ -1,6 +1,5 @@
 """
-watermark.py — video yuklab olish (yt-dlp) va watermark/username
-hududini tozalash (ffmpeg) bilan bog'liq barcha funksiyalar shu yerda.
+watermark.py — video yuklab olish (yt-dlp) va watermark tozalash (ffmpeg)
 """
 
 import os
@@ -19,19 +18,37 @@ from config import (
     logger,
 )
 
+COOKIE_FILE = r"C:\Users\user\Downloads\akow1\cookies.txt"
 
-def _download_video_once(url: str, out_dir: str) -> str:
+
+def _needs_cookies(url: str) -> bool:
+    u = url.lower()
+    return any(x in u for x in (
+        "instagram.com",
+        "facebook.com",
+        "fb.watch",
+        "tiktok.com",
+    ))
+
+
+def _download_video_once(url: str, out_dir: str) -> tuple[str, str]:
+    """(filepath, music_search_query) qaytaradi."""
     out_template = os.path.join(out_dir, "%(id)s.%(ext)s")
     ydl_opts = {
         "outtmpl": out_template,
-        "format": "mp4/best",
+        "format": "bv*+ba/b",
+        "merge_output_format": "mp4",
         "quiet": True,
         "noplaylist": True,
+        "noprogress": True,
+        "socket_timeout": 30,
+        "retries": 3,
     }
+
+    if _needs_cookies(url) and os.path.isfile(COOKIE_FILE):
+        ydl_opts["cookiefile"] = COOKIE_FILE
+
     with YoutubeDL(ydl_opts) as ydl:
-        # Avval faqat metama'lumotni olamiz (tarmoqqa 2 marta so'rov
-        # yubormaslik uchun), davomiylikni tekshiramiz, so'ng shu bir xil
-        # ma'lumot asosida yuklab olamiz.
         info = ydl.extract_info(url, download=False)
         duration = info.get("duration") or 0
         if duration and duration > MAX_VIDEO_DURATION_SECONDS:
@@ -39,33 +56,54 @@ def _download_video_once(url: str, out_dir: str) -> str:
                 f"Video juda uzun ({duration // 60} daqiqa). "
                 f"Maksimal ruxsat etilgan: {MAX_VIDEO_DURATION_SECONDS // 60} daqiqa."
             )
+
         ydl.download([url])
         filepath = ydl.prepare_filename(info)
+
         if not os.path.exists(filepath):
-            # Ba'zi platformalarda kengaytma mos kelmasligi mumkin (masalan
-            # .webm o'rniga .mp4 saqlangan bo'lishi mumkin) — papkadagi eng
-            # so'nggi yaratilgan faylni topamiz.
+            base, _ = os.path.splitext(filepath)
+            for ext in (".mp4", ".webm", ".mkv"):
+                candidate = base + ext
+                if os.path.exists(candidate):
+                    filepath = candidate
+                    break
+
+        if not os.path.exists(filepath):
             base_dir = os.path.dirname(filepath) or out_dir
             candidates = [
-                os.path.join(base_dir, f) for f in os.listdir(base_dir)
+                os.path.join(base_dir, f)
+                for f in os.listdir(base_dir)
+                if os.path.isfile(os.path.join(base_dir, f))
             ]
-            candidates = [f for f in candidates if os.path.isfile(f)]
             if candidates:
                 filepath = max(candidates, key=os.path.getmtime)
-        return filepath
+
+        if not os.path.exists(filepath):
+            raise FileNotFoundError("Video yuklandi, lekin fayl topilmadi.")
+
+        title = info.get("track") or info.get("title") or "audio"
+        artist = info.get("artist") or info.get("creator") or ""
+        # hashtaglarni biroz tozalash
+        clean_title = " ".join(
+            w for w in str(title).split() if not w.startswith("#")
+        ).strip() or str(title)
+
+        if artist and str(artist).lower() not in clean_title.lower():
+            search_query = f"{artist} - {clean_title}"
+        else:
+            search_query = clean_title
+
+        return filepath, search_query
 
 
-def download_video(url: str, out_dir: str) -> str:
-    """
-    yt-dlp yordamida videoni yuklaydi. Tarmoq xatosi bo'lsa
-    MAX_DOWNLOAD_RETRIES marta qayta urinadi (backoff bilan).
-    """
+def download_video(url: str, out_dir: str) -> tuple[str, str]:
+    """(filepath, music_search_query) qaytaradi."""
     last_error: Exception | None = None
     for attempt in range(1, MAX_DOWNLOAD_RETRIES + 1):
         try:
             return _download_video_once(url, out_dir)
         except ValueError:
-            raise  # davomiylik chegarasi — qayta urinish shart emas
+            raise
         except Exception as e:
             last_error = e
             logger.warning(
@@ -92,13 +130,6 @@ def get_video_resolution(filepath: str) -> tuple[int, int]:
 
 
 def remove_watermark(input_path: str, output_path: str, position: str, mode: str) -> None:
-    """
-    Videoning belgilangan burchagidagi username/watermarkni yo'q qiladi.
-
-    mode == "box"  -> hududni to'liq qora to'rtburchak bilan qoplaydi
-                       (100% kafolatlangan yashirish).
-    mode == "blur" -> hududni kuchli boxblur bilan xiralashtiradi.
-    """
     if position == "none":
         shutil.copyfile(input_path, output_path)
         return
@@ -142,15 +173,11 @@ def remove_watermark(input_path: str, output_path: str, position: str, mode: str
 
 
 def extract_audio_from_local_video(input_path: str, output_path: str) -> None:
-    """
-    Allaqachon diskda mavjud bo'lgan video faylning audio (musiqa)
-    qismini mp3 ko'rinishida ajratib oladi. (Galereyadan yuborilgan
-    video uchun ishlatiladi — internetdan qayta yuklash shart emas.)
-    """
+    """Videodan audio ajratadi (zaxira variant)."""
     cmd = [
         "ffmpeg", "-y",
         "-i", input_path,
-        "-vn",                 # video oqimini olib tashlaymiz
+        "-vn",
         "-acodec", "libmp3lame",
         "-ab", "192k",
         "-ar", "44100",
@@ -162,7 +189,6 @@ def extract_audio_from_local_video(input_path: str, output_path: str) -> None:
 
 
 def get_video_duration(filepath: str) -> float:
-    """Video davomiyligini soniyalarda qaytaradi."""
     cmd = [
         "ffprobe", "-v", "error",
         "-show_entries", "format=duration",
@@ -174,12 +200,6 @@ def get_video_duration(filepath: str) -> float:
 
 
 def trim_video(input_path: str, output_path: str, start_seconds: float, end_seconds: float) -> None:
-    """
-    Videoning [start_seconds, end_seconds] oralig'ini kesib oladi.
-    '-c copy' bilan tez (qayta kodlashsiz) kesishga urinadi; agar bu
-    ishlamasa (ba'zi formatlarda kalit-freym muammosi bo'lishi mumkin),
-    qayta kodlash bilan takrorlaydi.
-    """
     if end_seconds <= start_seconds:
         raise ValueError("Tugash vaqti boshlanish vaqtidan katta bo'lishi kerak.")
 
@@ -197,7 +217,6 @@ def trim_video(input_path: str, output_path: str, start_seconds: float, end_seco
     if result.returncode == 0 and os.path.exists(output_path) and os.path.getsize(output_path) > 0:
         return
 
-    # Tez usul ishlamasa — qayta kodlash bilan aniqroq kesamiz
     accurate_cmd = [
         "ffmpeg", "-y",
         "-i", input_path,
@@ -213,10 +232,6 @@ def trim_video(input_path: str, output_path: str, start_seconds: float, end_seco
 
 
 def compress_video(input_path: str, output_path: str, crf: int) -> None:
-    """
-    Video hajmini kichraytiradi (H.264 CRF siqish orqali).
-    CRF qancha katta bo'lsa, fayl shuncha kichik, lekin sifat shuncha past.
-    """
     cmd = [
         "ffmpeg", "-y",
         "-i", input_path,

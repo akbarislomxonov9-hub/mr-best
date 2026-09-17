@@ -10,7 +10,7 @@ from yt_dlp import YoutubeDL
 
 from config import MAX_DOWNLOAD_RETRIES, RETRY_BACKOFF_SECONDS, logger
 
-COOKIE_FILE = r"C:\Users\user\Downloads\files (7)\cookies.txt"
+COOKIE_FILE = r"C:\Users\user\Downloads\akow1\cookies.txt"
 
 
 def _base_ydl_opts(out_template: str, use_cookies: bool = False) -> dict:
@@ -26,14 +26,12 @@ def _base_ydl_opts(out_template: str, use_cookies: bool = False) -> dict:
             "preferredquality": "192",
         }],
     }
-    # Cookie faqat kerak bo'lganda (Instagram va h.k.)
     if use_cookies and os.path.isfile(COOKIE_FILE):
         opts["cookiefile"] = COOKIE_FILE
     return opts
 
 
 def _needs_cookies(url: str) -> bool:
-    """Instagram, Facebook va boshqa login talab qiladigan saytlar."""
     u = url.lower()
     return any(x in u for x in (
         "instagram.com",
@@ -44,6 +42,7 @@ def _needs_cookies(url: str) -> bool:
 
 
 def search_and_download_music(query: str, out_dir: str) -> tuple[str, str]:
+    """Qo'shiq nomi bo'yicha YouTube'dan TO'LIQ trek yuklaydi."""
     out_template = os.path.join(out_dir, f"{uuid.uuid4().hex}.%(ext)s")
     ydl_opts = _base_ydl_opts(out_template, use_cookies=False)
     ydl_opts["default_search"] = "ytsearch1"

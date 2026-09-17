@@ -1,0 +1,13 @@
+﻿.env
+cookies.txt
+*.session
+.venv/
+__pycache__/
+*.pyc
+downloads/
+logs/
+*.mp3
+*.mp4
+*.webm
+known_users.json
+.DS_Store
