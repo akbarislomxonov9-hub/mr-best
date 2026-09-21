@@ -4,6 +4,9 @@ import tempfile
 import time
 import uuid
 
+from flask import Flask
+from threading import Thread
+
 from aiogram import Bot, Dispatcher, F
 from aiogram.types import (
     Message,
@@ -904,8 +907,27 @@ async def main() -> None:
         logger.info("Bot to'xtatildi.")
         await bot.session.close()
 
+# ============================================================
+# RENDER UCHUN KEEP-ALIVE (portda tinglash)
+# ============================================================
+
+app = Flask('')
+
+@app.route('/')
+def home():
+    return "Bot ishlayapti ✅"
+
+def run_flask():
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
+
+def keep_alive():
+    t = Thread(target=run_flask)
+    t.daemon = True
+    t.start()
 
 if __name__ == "__main__":
+    keep_alive()          # <-- shu qatorni qo‘shing
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
