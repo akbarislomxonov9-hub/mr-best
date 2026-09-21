@@ -4,9 +4,6 @@ import tempfile
 import time
 import uuid
 
-from flask import Flask
-from threading import Thread
-
 from aiogram import Bot, Dispatcher, F
 from aiogram.types import (
     Message,
@@ -18,6 +15,7 @@ from aiogram.types import (
 from aiogram.filters import CommandStart, Command
 from aiogram.exceptions import TelegramAPIError
 from aiogram.types import ErrorEvent
+from aiohttp import web  # === ADMIN PANEL / RENDER === (health-server uchun)
 
 from config import (
     BOT_TOKEN,
@@ -87,6 +85,9 @@ pending_choice: dict[int, dict] = {}
 trim_pending: dict[int, str] = {}
 resize_pending: dict[int, str] = {}
 
+# === ADMIN PANEL === kutilayotgan broadcast matni
+admin_pending_text: dict[int, str] = {}
+
 TRIM_DIR = "downloads/trim"
 RESIZE_DIR = "downloads/resize"
 os.makedirs(TRIM_DIR, exist_ok=True)
@@ -100,6 +101,21 @@ def choice_keyboard() -> InlineKeyboardMarkup:
             InlineKeyboardButton(text="🖼 Video (watermark tozalangan)", callback_data="choice:video"),
         ]]
     )
+
+
+# === ADMIN PANEL === tugmalar
+def admin_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="📊 Statistika", callback_data="adm:stats")],
+        [InlineKeyboardButton(text="📢 Xabar yuborish", callback_data="adm:broadcast")],
+    ])
+
+
+def broadcast_confirm_keyboard() -> InlineKeyboardMarkup:
+    return InlineKeyboardMarkup(inline_keyboard=[[
+        InlineKeyboardButton(text="✅ Yuborish", callback_data="adm:confirm"),
+        InlineKeyboardButton(text="❌ Bekor", callback_data="adm:cancel"),
+    ]])
 
 
 _RESIZE_LABELS = {
@@ -218,6 +234,14 @@ async def cmd_broadcast(message: Message) -> None:
     await message.answer(
         f"✅ Yuborildi!\n👥 Muvaffaqiyatli: {success}\n⚠️ Yetib bormadi: {failed}"
     )
+
+
+# === ADMIN PANEL === /admin buyrug'i (faqat adminlarga javob beradi)
+@dp.message(Command("admin"))
+async def cmd_admin(message: Message) -> None:
+    if not admin.is_admin(message.chat.id):
+        return  # oddiy foydalanuvchiga umuman javob bermaydi
+    await message.answer("🔐 Admin panel:", reply_markup=admin_keyboard())
 
 
 @dp.message(F.text == MENU_INSTAGRAM)
@@ -584,6 +608,43 @@ async def handle_resize_choice(callback: CallbackQuery) -> None:
                     pass
 
 
+# === ADMIN PANEL === admin tugmalari callback'i
+@dp.callback_query(F.data.startswith("adm:"))
+async def handle_admin_callback(callback: CallbackQuery) -> None:
+    # Tekshiruv tugmani bosgan odam bo'yicha
+    if not admin.is_admin(callback.from_user.id):
+        await callback.answer()
+        return
+
+    chat_id = callback.message.chat.id
+    action = callback.data.split(":", 1)[1]
+    await callback.answer()
+
+    if action == "stats":
+        await callback.message.answer(stats.get_stats_text())
+
+    elif action == "broadcast":
+        user_mode[chat_id] = "admin_broadcast"
+        await callback.message.answer(
+            "✍️ Hammaga yuboriladigan xabar matnini yozing (bekor qilish: /cancel)."
+        )
+
+    elif action == "confirm":
+        text = admin_pending_text.pop(chat_id, None)
+        if not text:
+            await callback.message.edit_text("⚠️ Xabar topilmadi. Qaytadan urinib ko'ring.")
+            return
+        await callback.message.edit_text("📢 Yuborilmoqda...")
+        success, failed = await admin.broadcast_message(bot, text)
+        await callback.message.edit_text(
+            f"✅ Yuborildi!\n👥 Muvaffaqiyatli: {success}\n⚠️ Yetib bormadi: {failed}"
+        )
+
+    elif action == "cancel":
+        admin_pending_text.pop(chat_id, None)
+        await callback.message.edit_text("❌ Bekor qilindi.")
+
+
 # ==================================================================
 # ASOSIY ISHLOV FUNKSIYALARI
 # ==================================================================
@@ -696,6 +757,82 @@ async def process_link_both(status_msg: Message, chat_id: int, url: str, platfor
     schedule_followup(bot, chat_id)
 
 # ==================================================================
+# GALEREYA VIDEO: tanlovdan keyingi ishlov
+# ==================================================================
+
+async def run_gallery_video(status_msg: Message, chat_id: int, file_id: str) -> None:
+    """Galereyadan yuborilgan videoning watermarkini tozalab qaytaradi."""
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        raw_path = os.path.join(tmp_dir, f"{uuid.uuid4().hex}.mp4")
+        try:
+            file_info = await bot.get_file(file_id)
+            await bot.download_file(file_info.file_path, destination=raw_path)
+        except Exception as e:
+            logger.exception("[%s] Galereya videosini yuklashda xatolik", chat_id)
+            await status_msg.edit_text(f"❌ Videoni yuklab bo'lmadi: {str(e)[:200]}")
+            return
+
+        await status_msg.edit_text("🎬 Watermark tozalanmoqda...")
+        processed_path = os.path.join(tmp_dir, f"{uuid.uuid4().hex}_clean.mp4")
+        try:
+            await asyncio.to_thread(
+                remove_watermark, raw_path, processed_path, WATERMARK_POSITION, WATERMARK_MODE
+            )
+        except Exception:
+            logger.exception("[%s] Galereya videosida watermark tozalashda xatolik", chat_id)
+            processed_path = raw_path
+
+        await status_msg.edit_text("📤 Yuborilmoqda...")
+        try:
+            await bot.send_video(chat_id, FSInputFile(processed_path), caption="✅ Video tayyor!")
+        except TelegramAPIError as e:
+            logger.error("[%s] Video yuborishda xatolik: %s", chat_id, e)
+            await status_msg.edit_text("❌ Video yuborilmadi (hajmi katta bo'lishi mumkin).")
+            return
+        await status_msg.delete()
+
+    stats.record_event("video", chat_id)
+    schedule_followup(bot, chat_id)
+
+
+async def run_gallery_audio(status_msg: Message, chat_id: int, file_id: str) -> None:
+    """Galereyadan yuborilgan videodan audio (mp3) ajratib beradi."""
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        raw_path = os.path.join(tmp_dir, f"{uuid.uuid4().hex}.mp4")
+        try:
+            file_info = await bot.get_file(file_id)
+            await bot.download_file(file_info.file_path, destination=raw_path)
+        except Exception as e:
+            logger.exception("[%s] Galereya videosini yuklashda xatolik", chat_id)
+            await status_msg.edit_text(f"❌ Videoni yuklab bo'lmadi: {str(e)[:200]}")
+            return
+
+        await status_msg.edit_text("🎵 Audio ajratilmoqda...")
+        audio_path = os.path.join(tmp_dir, f"{uuid.uuid4().hex}.mp3")
+        try:
+            await asyncio.to_thread(extract_audio_from_local_video, raw_path, audio_path)
+        except Exception as e:
+            logger.exception("[%s] Audio ajratishda xatolik", chat_id)
+            await status_msg.edit_text(f"❌ Audio ajratib bo'lmadi: {str(e)[:200]}")
+            return
+
+        await status_msg.edit_text("📤 Yuborilmoqda...")
+        try:
+            await bot.send_audio(
+                chat_id, FSInputFile(audio_path),
+                title="Video audiosi", caption="🎵 Videodan ajratilgan audio",
+            )
+        except TelegramAPIError as e:
+            logger.error("[%s] Audio yuborishda xatolik: %s", chat_id, e)
+            await status_msg.edit_text("❌ Audio yuborilmadi.")
+            return
+        await status_msg.delete()
+
+    stats.record_event("musiqa", chat_id)
+    schedule_followup(bot, chat_id)
+
+
+# ==================================================================
 # MUSIQA QIDIRISH
 # ==================================================================
 
@@ -743,6 +880,17 @@ async def handle_text(message: Message) -> None:
     text = message.text or ""
     chat_id = message.chat.id
     mode = user_mode.get(chat_id)
+
+    # === ADMIN PANEL === broadcast matnini qabul qilish va tasdiqlash so'rash
+    if mode == "admin_broadcast" and admin.is_admin(chat_id):
+        user_mode[chat_id] = None
+        admin_pending_text[chat_id] = text
+        total = len(stats.get_known_users())
+        await message.answer(
+            f"📝 Xabar:\n\n{text}\n\n👥 {total} ta foydalanuvchiga yuborilsinmi?",
+            reply_markup=broadcast_confirm_keyboard(),
+        )
+        return
 
     if mode == "qr":
         wait = check_cooldown(chat_id)
@@ -896,8 +1044,20 @@ async def global_error_handler(event: ErrorEvent) -> bool:
 # ISHGA TUSHIRISH
 # ==================================================================
 
+# === RENDER === Web Service ochiq port talab qiladi, shuning uchun kichik health-server
+async def start_health_server() -> None:
+    app = web.Application()
+    app.router.add_get("/", lambda request: web.Response(text="OK"))
+    runner = web.AppRunner(app)
+    await runner.setup()
+    port = int(os.getenv("PORT", os.getenv("WEBAPP_PORT", 10000)))
+    await web.TCPSite(runner, "0.0.0.0", port).start()
+    logger.info("Health-server %s-portda ishga tushdi.", port)
+
+
 async def main() -> None:
     logger.info("Bot ishga tushmoqda...")
+    await start_health_server()
     broadcast_task = asyncio.create_task(admin.hourly_broadcast_loop(bot))
 
     try:
@@ -907,27 +1067,8 @@ async def main() -> None:
         logger.info("Bot to'xtatildi.")
         await bot.session.close()
 
-# ============================================================
-# RENDER UCHUN KEEP-ALIVE (portda tinglash)
-# ============================================================
-
-app = Flask('')
-
-@app.route('/')
-def home():
-    return "Bot ishlayapti ✅"
-
-def run_flask():
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
-
-def keep_alive():
-    t = Thread(target=run_flask)
-    t.daemon = True
-    t.start()
 
 if __name__ == "__main__":
-    keep_alive()          # <-- shu qatorni qo‘shing
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
